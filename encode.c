@@ -28,10 +28,10 @@ int main(int argc, char *argv[]) {
 	FILE * outFile = stdout;
 	int listSize;
 
-	if (argc == 0) {
+	if (argc == 1) {
 		perror("Incorrect number of command line arguments!!");
 		exit(EXIT_FAILURE);
-	} else if (argc == 2) {
+	} else if (argc == 3) {
 		outFile = fopen(argv[2], "w");
 	}
 
