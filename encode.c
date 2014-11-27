@@ -5,14 +5,17 @@
 // global variables
 static int acc = 0;
 static int count = 0;
+static int key[257];
+
 
 // prototyes
 struct Node * genList();
-int getFreqs(struct Node * poop, FILE * hi);
+int getFreqs(struct Node * head, FILE * f);
 struct Node * insertionSort(struct Node * head, int size);
 struct Node * makeTree(struct Node * head, int size);
-void printTree(struct Node * head, FILE * f);
+void printTree(struct Node * head, FILE * f, char * sofar, int len);
 void print_bit(int i, FILE * f);
+void encode_txt(FILE * input, FILE * output);
 
 
 struct Node {
@@ -27,6 +30,7 @@ int main(int argc, char *argv[]) {
 	FILE * inFile;
 	FILE * outFile = stdout;
 	int listSize;
+	char sofar[257];
 
 	if (argc == 1) {
 		perror("Incorrect number of command line arguments!!");
@@ -45,7 +49,9 @@ int main(int argc, char *argv[]) {
 	listSize = getFreqs(head, inFile);
 	head = insertionSort(head, listSize);
 	head = makeTree(head, listSize);
-	printTree(head, outFile);
+	printTree(head, outFile, sofar);
+	
+
 /*
 	struct Node * point;
 	point = head;
@@ -60,7 +66,6 @@ int main(int argc, char *argv[]) {
 
 	exit(EXIT_SUCCESS);
 }
-
 
 // generates a linked list of 257 nodes (256 plus one for EOF)
 // returns a pointer to the head of the linked list
@@ -181,37 +186,57 @@ struct Node * makeTree(struct Node * head, int size) {
 	return p; 
 }
 
-// traverses the tree in inorder
-void printTree(struct Node * head, FILE * f) {
+// traverses the tree in inorder and sends 0 or 1 to print_bit()
+// At the same time, constructs the key from character to encoded version
+void printTree(struct Node * head, FILE * f, char * sofar, int len) {
 	if (head->left == NULL) {
-		print_bit(1, f);
-		print_bit(head->item, f);
-	} else {
-		print_bit(0, f);
-		printTree(head->left, f);
-		print_bit(0, f);
-		printTree(head->right, f);
-	}
-}
-
-
-void print_bit(int i, FILE * f) {
-	int save = 0;
-	if (i <= 1) {
-		count++;
-		acc = (acc << 1) + i;
-	} else {
-		save = (255 >> (8 - count)) || i;
-		acc = (acc << (8 - count)) + (i >> (8-count));
+		int mask = 128;
+		int ch = head->item;
+		print_bit('1', f); // it's a leaf node
 		
-		fprintf(f, "%c", acc);
-		acc = save;
-	}
+		// prints the character
+		for (int i = 0; i < CHAR_BIT; i++) {
+		    if((ch & mask) != 0) {
+			print_bit('1', f);
+		    } else {
+			print_bit('0', f);
+		    }
+		    mask = mask >> 1; // right shift the mask by 1
+		}
 
-	if (count == CHAR_BIT) {
-		fprintf(f, "%c", acc);
-		count = 0;
-		acc = 0;
+		keys[ch] = sofar;
+		
+	} else {
+		print_bit('0', f);
+		sofar[len] = '0';
+		printTree(head->left, f, sofar, len+1);
+		print_bit('0', f);
+		sofar[len] = '1';
+		printTree(head->right, f, sofar, len+1);
 	}
 }
+
+
+void print_bit(char c, FILE * f) {
+    
+    count++;
+    acc = (acc << 1) + (c - '0');
+
+    if(count == CHAR_BIT) {
+	fprintf(f, "%c", acc);
+	count = 0;
+	acc = 0;
+    }
+
+}
+
+void encode_txt(FILE * input, FILE * output) {
+    
+
+
+
+
+
+}
+
 
