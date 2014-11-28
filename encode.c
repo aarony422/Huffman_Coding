@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <string.h>
 
 // global variables
 static int acc = 0;
 static int count = 0;
-static int key[257];
+static char * key[257];
 
 
 // prototyes
@@ -14,7 +15,7 @@ int getFreqs(struct Node * head, FILE * f);
 struct Node * insertionSort(struct Node * head, int size);
 struct Node * makeTree(struct Node * head, int size);
 void printTree(struct Node * head, FILE * f, char * sofar, int len);
-void print_bit(int i, FILE * f);
+void print_bit(char c, FILE * f);
 void encode_txt(FILE * input, FILE * output);
 
 
@@ -30,7 +31,10 @@ int main(int argc, char *argv[]) {
 	FILE * inFile;
 	FILE * outFile = stdout;
 	int listSize;
+
+	// variables for printTree function
 	char sofar[257];
+	int len = 0;
 
 	if (argc == 1) {
 		perror("Incorrect number of command line arguments!!");
@@ -49,7 +53,7 @@ int main(int argc, char *argv[]) {
 	listSize = getFreqs(head, inFile);
 	head = insertionSort(head, listSize);
 	head = makeTree(head, listSize);
-	printTree(head, outFile, sofar);
+	printTree(head, outFile, sofar, len);
 	
 
 /*
@@ -204,13 +208,14 @@ void printTree(struct Node * head, FILE * f, char * sofar, int len) {
 		    mask = mask >> 1; // right shift the mask by 1
 		}
 
-		keys[ch] = sofar;
+		sofar[len] = '\0';
+		strcpy(key[ch], sofar);
 		
 	} else {
 		print_bit('0', f);
 		sofar[len] = '0';
 		printTree(head->left, f, sofar, len+1);
-		print_bit('0', f);
+
 		sofar[len] = '1';
 		printTree(head->right, f, sofar, len+1);
 	}
@@ -230,13 +235,9 @@ void print_bit(char c, FILE * f) {
 
 }
 
-void encode_txt(FILE * input, FILE * output) {
-    
+/*
+void encode_txt(FILE * input, FILE * output) {    
 
-
-
-
-
-}
+}*/
 
 
