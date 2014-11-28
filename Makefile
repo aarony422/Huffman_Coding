@@ -6,5 +6,8 @@ all: encode
 encode: encode.c
 	$(CC) $(CFLAGS) -o encode encode.c
 
+decode: decode.c
+	$(CC) $(CFLAGS) -o decode decode.c
+
 clean:
-	rm -f encode
+	rm -f encode decode
