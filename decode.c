@@ -1,4 +1,4 @@
-#include <studio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
 
@@ -6,21 +6,22 @@ static int count = 8;
 static int curgot = 0;
 static int zcount = 0;
 static int ocount = 0;
-void makeTree(struct Node * root, FILE * f);
-int gimmeBit(FILE * f);
-void setEOF(struct Node * root, FILE * f);
-int decodeStuff(struct Node * root, FILE * f)
 
 struct Node {
 	int freq;
 	int item;
 	struct Node * right;
 	struct Node * left;
-}
+};
+
+void makeTree(struct Node * root, FILE * f);
+int gimmeBit(FILE * f);
+void setEOF(struct Node * root, FILE * f);
+int decodeStuff(struct Node * root, FILE * f);
 
 
 int main(int argc, char *argv[]) {
-	FILE * inFile;
+        FILE * inFile;
 	FILE * outFile = stdout;
 	
 	if(argc == 1) {
@@ -37,12 +38,13 @@ int main(int argc, char *argv[]) {
 	}
 	
 	struct Node * head = malloc(sizeof(struct Node));
+	printf("making da tree");
 	makeTree(head,inFile);
-	
+	printf("setting da EOF");
 	setEOF(head,inFile);
-	
+	printf("decoding da message");
 	int k;
-	while (-1 != (k = gimmeBit(inFile)) {
+	while (-1 != (k = decodeStuff(head, inFile))) {
 		//print value? (k)
 		fprintf(outFile,"%c",k);
 	}
@@ -56,7 +58,7 @@ void makeTree(struct Node * root, FILE * f) {
 	int i;
 	int val = 0;
 	i = gimmeBit(f);
-	if (i == 0) {
+	if (i == 1) {
 		zcount++;
 		//get next 8 bits and calculate value
 		for (int k = 0; k < 8; k++){
@@ -68,16 +70,19 @@ void makeTree(struct Node * root, FILE * f) {
 	} else { //i = 0
 		ocount++;
 		//create left and right subtrees
-		root->left = malloc(sizeof(struct Node));
-		root->right = malloc(sizeof(struct Node));
+		struct Node * l = malloc(sizeof(struct Node));
+		root->left = l;
+		struct Node * r = malloc (sizeof(struct Node));
+		root->right = r;
 		//recurse on them
 		makeTree(root->left,f);
 		makeTree(root->right,f);
 	}
 	//do i need this ?
+	/*
 	if (zcount + 1 = ocount) {
 		//exit
-	}
+	}*/
 }
 
 int gimmeBit(FILE * f){
@@ -88,7 +93,7 @@ int gimmeBit(FILE * f){
 		curgot = fgetc(f);
 	}
 	//ret = msb of curgot by shifting
-	rtn = curgot >> (CHAR_MAX - (count + 1); //not sure if this part is right tbh
+	rtn = curgot >> (CHAR_MAX - (count + 1)); //not sure if this part is right tbh
 	//remove msb of curgot
 	//shift it left  by count+1
 	count++;
@@ -105,26 +110,29 @@ void setEOF(struct Node * root, FILE * f) {
 	if (!root->left) {
 		//set item to be EOF ?
 		root->item = -1;
-	}else {
+	} else {
 		n = gimmeBit(f);
 		if (n == 0) {
-			setEOF(root->left,f);
+		    setEOF(root->left,f);
 		} else { //n = 1
 			setEOF(root->right,f);
 		}
 	}
 }
 
-int decodeStuff(struct * root, FILE * f) {
+int decodeStuff(struct Node * root, FILE * in) {
 	int n;
+	int k;
 	if (!root->left) {
-		return root->item;
+    	    return root->item;
 	} else {
-		n = gimmeBit(f);
-		if (n == 0) {
-			decodeStuff(root->left,f);
-		} else {
-			decodeStuff(root->right,f);
-		}
+	    n = gimmeBit(in);
+	    if (n == 0) {
+		k = decodeStuff(root->left, in);
+	    } else {
+		k =decodeStuff(root->right, in);
+	    }
 	}
+	return k;
 }
+

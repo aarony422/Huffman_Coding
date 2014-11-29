@@ -54,7 +54,11 @@ int main(int argc, char *argv[]) {
 	head = insertionSort(head, listSize);
 	head = makeTree(head, listSize);
 	printTree(head, outFile, sofar, len);
-	
+
+	rewind(inFile);
+
+	encode_txt(inFile, outFile);
+
 
 /*
 	struct Node * point;
@@ -209,6 +213,8 @@ void printTree(struct Node * head, FILE * f, char * sofar, int len) {
 		}
 
 		sofar[len] = '\0';
+		char * temp = (char*)malloc(sizeof(char)*255);
+		key[ch] = temp;
 		strcpy(key[ch], sofar);
 		
 	} else {
@@ -235,9 +241,27 @@ void print_bit(char c, FILE * f) {
 
 }
 
-/*
-void encode_txt(FILE * input, FILE * output) {    
 
-}*/
+void encode_txt(FILE * input, FILE * output) {    
+    
+    int c;
+
+    while(EOF != (c = fgetc(input))) {
+	char temp[257];
+	strcpy(temp, key[c]);
+	int i = 0;
+	
+	while(temp[i] != '\0') {
+	    print_bit(temp[i] - '0', output);
+	    i++;	
+	}
+    }
+    int j = 8;
+
+    while (j > 0) {
+	print_bit('0', output);
+	j--;
+    }
+}
 
 
