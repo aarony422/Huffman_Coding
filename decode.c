@@ -21,29 +21,32 @@ int decodeStuff(struct Node * root, FILE * f);
 
 
 int main(int argc, char *argv[]) {
-        FILE * inFile;
+	FILE * inFile;
 	FILE * outFile = stdout;
+	int k;
+	struct Node * head = malloc(sizeof(struct Node));
 	
+	printf("?????");
 	if(argc == 1) {
 		perror("Incorrect number of command line arguments!!");
 		exit(EXIT_FAILURE);
 	} else if (argc == 3) {
 		outFile = fopen(argv[2], "w");
 	}
-
+	printf("poopyfarts");
 	inFile = fopen(argv[1],"r");
 	if (!inFile) {
 		perror("Input file cannot be opened !!??");
 		exit(EXIT_FAILURE);
 	}
-	
-	struct Node * head = malloc(sizeof(struct Node));
+	printf("omg");
+	//struct Node * head = malloc(sizeof(struct Node));
 	printf("making da tree");
 	makeTree(head,inFile);
 	printf("setting da EOF");
 	setEOF(head,inFile);
 	printf("decoding da message");
-	int k;
+	//int k;
 	while (-1 != (k = decodeStuff(head, inFile))) {
 		//print value? (k)
 		fprintf(outFile,"%c",k);
