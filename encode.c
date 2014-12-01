@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
-#include <assert.h>
 
 // global variables
 static int acc = 0;
@@ -228,9 +227,6 @@ struct Node * makeTree(struct Node * head, int size) {
 		NewNode->next = NewNode->right->next;
 		NewNode->right->next = NULL;
 		s--;
-
-		assert(NewNode->left->next == NULL);
-		assert(NewNode->right->next == NULL);
 
 
 		if (s == 1) {
