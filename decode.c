@@ -18,7 +18,7 @@ void makeTree(struct Node * root, FILE * f);
 int gimmeBit(FILE * f);
 void setEOF(struct Node * root, FILE * f);
 int decodeStuff(struct Node * root, FILE * f);
-
+void byebyeTree(struct Node * root);
 
 int main(int argc, char *argv[]) {
 
@@ -57,9 +57,21 @@ int main(int argc, char *argv[]) {
 		k = decodeStuff(head,inFile);
 	}
 	
+	byebyeTree(head);
+	
 	fclose(inFile);
 	fclose(outFile);
 	exit(EXIT_SUCCESS);
+}
+
+void byebyeTree(struct Node * root) {
+	if (!root->left) {
+		free(root);
+	} else {
+		byebyeTree(root->left);
+		byebyeTree(root->right);
+		free(root);
+	}
 }
 
 void makeTree(struct Node * root, FILE * f) {
