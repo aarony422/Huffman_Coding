@@ -55,7 +55,8 @@ int main(int argc, char *argv[]) {
 	head = insertionSort(head, listSize);
 	head = makeTree(head, listSize);
 	printTree(head, outFile, sofar, len);
-
+	
+	/*
 	// print the bit string representing EOF
 	int l = 0;
 	char * ch = key[256];
@@ -67,16 +68,6 @@ int main(int argc, char *argv[]) {
 	rewind(inFile);
 	encode_txt(inFile, outFile);
 
-
-/*
-	struct Node * point;
-	point = head;
-	while (point) {
-		printf("%c%d\n", point->item, point->freq);
-		point = point->next;
-	}
-	printf("%s\n"," ");
-	*/
 	
 	// free key
 	
@@ -85,7 +76,8 @@ int main(int argc, char *argv[]) {
 		free(key[l]);
 	}
 	
-
+	
+	*/
 	fclose(inFile);
 	fclose(outFile);
 	exit(EXIT_SUCCESS);
@@ -224,14 +216,16 @@ void printTree(struct Node * head, FILE * f, char * sofar, int len) {
 	if (head->left == NULL) {
 		int mask = 128;
 		int ch = head->item;
-		print_bit('1', f); // it's a leaf node
-		
+		//print_bit('1', f); // it's a leaf node
+		printf("1");
 		// prints the character
 		for (int i = 0; i < CHAR_BIT; i++) {
 		    if((ch & mask) != 0) {
-				print_bit('1', f);
+				printf("1");
+				//print_bit('1', f);
 		    } else {
-				print_bit('0', f);
+				printf("0");
+				//print_bit('0', f);
 		    }
 		    mask = mask >> 1; // right shift the mask by 1
 		}
@@ -252,7 +246,8 @@ void printTree(struct Node * head, FILE * f, char * sofar, int len) {
 		free(head);	
 
 	} else {
-		print_bit('0', f);
+		//print_bit('0', f);
+		printf("0");
 		sofar[len] = '0';
 		printTree(head->left, f, sofar, len+1);
 
@@ -266,14 +261,14 @@ void printTree(struct Node * head, FILE * f, char * sofar, int len) {
 
 void print_bit(char c, FILE * f) {
     
-    count++;
-    acc = (acc << 1) + (c - '0');
-
     if(count == CHAR_BIT) {
 		fprintf(f, "%c", acc);
 		count = 0;
 		acc = 0;
     }
+
+    count++;
+    acc = (acc << 1) + (c - '0');
 
 }
 
@@ -288,8 +283,9 @@ void encode_txt(FILE * input, FILE * output) {
 	int i = 0;
 	
 		while(temp[i] != '\0') {
-	   	 	print_bit(temp[i] - '0', output);
-	    	i++;	
+			
+	   	 	print_bit(temp[i], output);
+			i++;	
 		}
     }
 

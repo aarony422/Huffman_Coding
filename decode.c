@@ -21,35 +21,40 @@ int decodeStuff(struct Node * root, FILE * f);
 
 
 int main(int argc, char *argv[]) {
+
 	FILE * inFile;
 	FILE * outFile = stdout;
 	int k;
 	struct Node * head = malloc(sizeof(struct Node));
+	head->left = NULL;
+	head->right = NULL;
 	
-	printf("?????");
+	
 	if(argc == 1) {
 		perror("Incorrect number of command line arguments!!");
 		exit(EXIT_FAILURE);
 	} else if (argc == 3) {
 		outFile = fopen(argv[2], "w");
 	}
-	printf("poopyfarts");
+	
 	inFile = fopen(argv[1],"r");
 	if (!inFile) {
 		perror("Input file cannot be opened !!??");
 		exit(EXIT_FAILURE);
 	}
-	printf("omg");
-	//struct Node * head = malloc(sizeof(struct Node));
-	printf("making da tree");
+	
 	makeTree(head,inFile);
-	printf("setting da EOF");
+	
 	setEOF(head,inFile);
-	printf("decoding da message");
-	//int k;
-	while (-1 != (k = decodeStuff(head, inFile))) {
+	//printf("where is cheese ??");
+	
+	k = decodeStuff(head,inFile);
+	//printf("%d\n",k);
+	while (-1 != k) {
 		//print value? (k)
+		//printf("hi");
 		fprintf(outFile,"%c",k);
+		k = decodeStuff(head,inFile);
 	}
 	
 	fclose(inFile);
@@ -61,22 +66,28 @@ void makeTree(struct Node * root, FILE * f) {
 	int i;
 	int val = 0;
 	i = gimmeBit(f);
-	if (i == 1) {
+	if (i) {
 		zcount++;
 		//get next 8 bits and calculate value
 		for (int k = 0; k < 8; k++){
 			val = val << 1;
-			val = gimmeBit(f);
+			val = val + gimmeBit(f);
 		}
 		//save in node
 		root->item = val;
 	} else { //i = 0
 		ocount++;
+
 		//create left and right subtrees
 		struct Node * l = malloc(sizeof(struct Node));
+		l->left = NULL;
+		l->right = NULL;
 		root->left = l;
 		struct Node * r = malloc (sizeof(struct Node));
+		r->left = NULL;
+		r->right = NULL;
 		root->right = r;
+
 		//recurse on them
 		makeTree(root->left,f);
 		makeTree(root->right,f);
@@ -90,21 +101,22 @@ void makeTree(struct Node * root, FILE * f) {
 
 int gimmeBit(FILE * f){
 	int rtn;
-	int mask = 255;
-	if (count == CHAR_MAX) {
+	if (count == CHAR_BIT) {
 		count = 0;
 		curgot = fgetc(f);
 	}
 	//ret = msb of curgot by shifting
-	rtn = curgot >> (CHAR_MAX - (count + 1)); //not sure if this part is right tbh
-	//remove msb of curgot
+	rtn = curgot >> 7; 
+	rtn &= 1;
 	//shift it left  by count+1
 	count++;
-	curgot = curgot << count;
-	//and with mask
-	curgot = curgot && mask;
-	//shift back right count
-	curgot = curgot >> count;
+	curgot = curgot << 1;
+	
+	if(rtn) {
+		//printf("1");
+	} else {
+		//printf("0");
+	}	    
 	return rtn;
 }
 
@@ -116,9 +128,9 @@ void setEOF(struct Node * root, FILE * f) {
 	} else {
 		n = gimmeBit(f);
 		if (n == 0) {
-		    setEOF(root->left,f);
+			setEOF(root->left, f);
 		} else { //n = 1
-			setEOF(root->right,f);
+			setEOF(root->right, f);
 		}
 	}
 }
@@ -127,13 +139,14 @@ int decodeStuff(struct Node * root, FILE * in) {
 	int n;
 	int k;
 	if (!root->left) {
+	    //printf("%d\n",root->item);
     	    return root->item;
 	} else {
 	    n = gimmeBit(in);
 	    if (n == 0) {
-		k = decodeStuff(root->left, in);
+		    k = decodeStuff(root->left, in);
 	    } else {
-		k =decodeStuff(root->right, in);
+		    k = decodeStuff(root->right, in);
 	    }
 	}
 	return k;
