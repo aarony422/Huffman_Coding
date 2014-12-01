@@ -1,0 +1,30 @@
+Names: Aaron (Shang Wei) Young, Katherine Chan
+
+encode.c: Takes in either 1 file to be encoded (the encoded file will display on stdout) or 2 files, the file to be encoded, and the output file. If the output file doesn't not exist, it will be created automatically. If it already exists, then the file will be overwritten. 
+
+decode.c: Takes in commandline arguments exactly the same as encode.c, except that the first file should be an encoded file, and the second (optional) argument should be the file (or stdout if left blank) that the decoded text will be printed. The encoded file should consist of a preorder traversal of the huffman tree from the encoding, print string representation of EOF, followed by the encoded text, then EOF. 
+
+encode.1: man page for encode.c
+
+decode.1: man page for decode.c
+
+Known Bugs:
+No known bugs or memory leaks.
+
+Estimated time:
+encode: 8 hrs
+decode: 3.5 hrs
+
+Interesting design decisions:
+
+insertionsort: Used an array of node pointers, and did insertionsort on the array. Then, used the ordering of the array to re-point the node next pointers. 
+
+insert_node: Due to how insertionsort was specified in the lab (placing nodes of equal frequency in front of the other nodes), using insertion sort during the construction of the huffman tree was not ideal. A separate function that placed a newly make internal node back into the linked list had to be made so it would work as intended. 
+
+Valgrind warnings:
+
+There were no valgrind warnings.
+
+
+Honor Code: We affirm that we have adhered to the Honor Code on this assigment. 
+
