@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
+#include <assert.h>
 
 // global variables
 static int acc = 0;
@@ -228,7 +229,10 @@ struct Node * makeTree(struct Node * head, int size) {
 		NewNode->right->next = NULL;
 		s--;
 
-		
+		assert(NewNode->left->next == NULL);
+		assert(NewNode->right->next == NULL);
+
+
 		if (s == 1) {
 			break;
 		}
@@ -259,6 +263,10 @@ struct Node * insert_node(struct Node * head, int size) {
 	struct Node * list[size];
 	struct Node * p = head->next;
 	int i = 0;
+
+	for (int t = 0; t < size; t++) {
+	    list[t] = NULL;
+	} 
 
 	// point each array index to corresponding list nodes
 	while (p != NULL) {
