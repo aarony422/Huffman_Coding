@@ -216,16 +216,16 @@ void printTree(struct Node * head, FILE * f, char * sofar, int len) {
 	if (head->left == NULL) {
 		int mask = 128;
 		int ch = head->item;
-		//print_bit('1', f); // it's a leaf node
-		printf("1");
+		print_bit('1', f); // it's a leaf node
+		//printf("1");
 		// prints the character
 		for (int i = 0; i < CHAR_BIT; i++) {
 		    if((ch & mask) != 0) {
-				printf("1");
-				//print_bit('1', f);
+				//printf("1");
+				print_bit('1', f);
 		    } else {
-				printf("0");
-				//print_bit('0', f);
+				//printf("0");
+				print_bit('0', f);
 		    }
 		    mask = mask >> 1; // right shift the mask by 1
 		}
@@ -246,8 +246,8 @@ void printTree(struct Node * head, FILE * f, char * sofar, int len) {
 		free(head);	
 
 	} else {
-		//print_bit('0', f);
-		printf("0");
+		print_bit('0', f);
+		//printf("0");
 		sofar[len] = '0';
 		printTree(head->left, f, sofar, len+1);
 
