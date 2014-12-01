@@ -19,6 +19,7 @@ void print_bit(char c, FILE * f);
 void encode_txt(FILE * input, FILE * output);
 
 
+
 struct Node {
 	int freq;
 	int item;
@@ -56,14 +57,14 @@ int main(int argc, char *argv[]) {
 	printTree(head, outFile, sofar, len);
 
 	// print the bit string representing EOF
-
-
+	int l = 0;
+	char * ch = key[256];
+	while(ch[l] != '\0') {
+		print_bit(ch[l], outFile);
+		l++;
+	}
 	
-
 	rewind(inFile);
-
-
-
 	encode_txt(inFile, outFile);
 
 
@@ -76,9 +77,17 @@ int main(int argc, char *argv[]) {
 	}
 	printf("%s\n"," ");
 	*/
-
+	
+	// free key
+	
+	l = 0;
+	for(; l < 257; l++) {
+		free(key[l]);
+	}
 	
 
+	fclose(inFile);
+	fclose(outFile);
 	exit(EXIT_SUCCESS);
 }
 
@@ -93,6 +102,9 @@ struct Node * genList() {
 		struct Node * NewNode = malloc(sizeof(struct Node));
 		NewNode->item = n;
 		NewNode->freq = 0;
+		NewNode->next = NULL;
+		NewNode->left = NULL;
+		NewNode->right = NULL;
 		if (n == -1) {
 			rtn = NewNode;
 			prev = NewNode;
@@ -133,6 +145,7 @@ int getFreqs(struct Node * head, FILE * f) {
 			q = q->next;
 		}
 	}
+
 	return counter;
 }
 
@@ -179,6 +192,7 @@ struct Node * insertionSort(struct Node * head, int size) {
 	list[m]->next = NULL;
 
 	head = list[0];
+	free(list);
 
 	return head;
 
@@ -190,6 +204,7 @@ struct Node * makeTree(struct Node * head, int size) {
 
 	while (p->next != NULL) {
 		struct Node * newNode = malloc(sizeof(struct Node));
+		newNode->next = NULL;
 		newNode->left = p;
 		newNode->right = p->next;
 		newNode->freq = p->freq + p->next->freq;
@@ -223,16 +238,19 @@ void printTree(struct Node * head, FILE * f, char * sofar, int len) {
 
 		sofar[len] = '\0';
 		char * temp = (char*)malloc(sizeof(char)*257);
-		key[ch] = temp;
 
 		//if ch is EOF, change index to 256 not -1
+	    
 		if (ch == -1) {
-			printf("HI this is ridic");
+			key[256] = temp;
 			strcpy(key[256], sofar);
 		} else {
+			key[ch] = temp;
 			strcpy(key[ch], sofar);
-		}
-		
+		} 
+
+		free(head);	
+
 	} else {
 		print_bit('0', f);
 		sofar[len] = '0';
@@ -240,6 +258,8 @@ void printTree(struct Node * head, FILE * f, char * sofar, int len) {
 
 		sofar[len] = '1';
 		printTree(head->right, f, sofar, len+1);
+
+		free(head);
 	}
 }
 
