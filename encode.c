@@ -238,18 +238,6 @@ struct Node * makeTree(struct Node * head, int size) {
 	return p;
 }
 
-// print tree function for testing purposes
-/*
-void print_tree(struct Node * head) {
-	if (head->left == NULL) {
-		printf("1");
-	} else {
-		printf("0");
-		print_tree(head->left);
-		print_tree(head->right);
-	}
-}
-*/
 
 struct Node * insert_node(struct Node * head, int size) {
 	if (size == 1) {
@@ -259,7 +247,9 @@ struct Node * insert_node(struct Node * head, int size) {
 	struct Node * list[size];
 	struct Node * p = head->next;
 	int i = 0;
-
+	
+	// set all node pointers to NULL
+	// left-over pointers messes up while loop below
 	for (int t = 0; t < size; t++) {
 	    list[t] = NULL;
 	} 
@@ -273,7 +263,8 @@ struct Node * insert_node(struct Node * head, int size) {
 
 	int j = head->freq;
 	i = 0;
-
+	
+	// advances i till it finds a node of larger freq
 	while (i < size-1) {
 		if (list[i]->freq < j) {
 			i++;
@@ -282,10 +273,13 @@ struct Node * insert_node(struct Node * head, int size) {
 			break;
 		}
 	}
-
+	
+	// simply return head if it is the smalleset node
 	if (i == 0) {
 		return head;
 	} 
+
+	// insert head into the correct position in linked list
 	struct Node * rtn = head->next;
 	list[i-1]->next = head;
 	head->next = list[i];
@@ -315,7 +309,7 @@ void printTree(struct Node * head, FILE * f, char * sofar, int len) {
 		    mask = mask >> 1; // right shift the mask by 1
 		}
 
-		
+		// null terminate sofar
 		sofar[len] = '\0';
 		char * temp = (char*)malloc(sizeof(char)*257);
 		
