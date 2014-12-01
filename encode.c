@@ -55,7 +55,14 @@ int main(int argc, char *argv[]) {
 	head = makeTree(head, listSize);
 	printTree(head, outFile, sofar, len);
 
+	// print the bit string representing EOF
+
+
+	
+
 	rewind(inFile);
+
+
 
 	encode_txt(inFile, outFile);
 
@@ -162,6 +169,8 @@ struct Node * insertionSort(struct Node * head, int size) {
 		list[j] = l;
 	}
 
+
+	// set node pointers to correct orders
 	int m;
 
 	for (m = 0; m < size - 1 ; m++) {
@@ -205,17 +214,24 @@ void printTree(struct Node * head, FILE * f, char * sofar, int len) {
 		// prints the character
 		for (int i = 0; i < CHAR_BIT; i++) {
 		    if((ch & mask) != 0) {
-			print_bit('1', f);
+				print_bit('1', f);
 		    } else {
-			print_bit('0', f);
+				print_bit('0', f);
 		    }
 		    mask = mask >> 1; // right shift the mask by 1
 		}
 
 		sofar[len] = '\0';
-		char * temp = (char*)malloc(sizeof(char)*255);
+		char * temp = (char*)malloc(sizeof(char)*257);
 		key[ch] = temp;
-		strcpy(key[ch], sofar);
+
+		//if ch is EOF, change index to 256 not -1
+		if (ch == -1) {
+			printf("HI this is ridic");
+			strcpy(key[256], sofar);
+		} else {
+			strcpy(key[ch], sofar);
+		}
 		
 	} else {
 		print_bit('0', f);
@@ -234,9 +250,9 @@ void print_bit(char c, FILE * f) {
     acc = (acc << 1) + (c - '0');
 
     if(count == CHAR_BIT) {
-	fprintf(f, "%c", acc);
-	count = 0;
-	acc = 0;
+		fprintf(f, "%c", acc);
+		count = 0;
+		acc = 0;
     }
 
 }
@@ -251,16 +267,17 @@ void encode_txt(FILE * input, FILE * output) {
 	strcpy(temp, key[c]);
 	int i = 0;
 	
-	while(temp[i] != '\0') {
-	    print_bit(temp[i] - '0', output);
-	    i++;	
-	}
+		while(temp[i] != '\0') {
+	   	 	print_bit(temp[i] - '0', output);
+	    	i++;	
+		}
     }
+
     int j = 8;
 
     while (j > 0) {
-	print_bit('0', output);
-	j--;
+		print_bit('0', output);
+		j--;
     }
 }
 
