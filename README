@@ -8,6 +8,10 @@ encode.1: man page for encode.c
 
 decode.1: man page for decode.c
 
+To view the processed man page, use one of the following commands:
+nroff -man encode.1 | less -is
+groff -man -Tascii encode.1 | less -is
+
 Known Bugs:
 No known bugs or memory leaks.
 
